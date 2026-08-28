@@ -1,107 +1,58 @@
-# Student Dropout Prediction
+# Student Dropout Prediction — XGBoost vs Neural Network
 
-Machine-learning project for identifying students at risk of academic withdrawal so that institutions can prioritize early support and intervention.
+An applied supervised-learning project for identifying students at risk of dropout across multiple stages of academic progression.
 
-## Project objective
+## Business problem
 
-Student attrition can have academic, financial and social consequences for both students and institutions. The objective of this project is to build and compare supervised machine-learning models that can identify patterns associated with dropout risk.
+Early identification of dropout risk can help educational institutions prioritize student support, allocate resources, and design targeted retention interventions.
 
-The project evaluates:
+The project asks two practical questions:
 
-- XGBoost
-- Multi-Layer Perceptron (MLP)
-- Baseline supervised-learning approaches
-- Feature engineering and class-imbalance handling
-- Hyperparameter tuning
-- Classification-model evaluation
+1. How accurately can dropout risk be predicted at different stages of a student's progression?
+2. How do a tree-based ensemble model and a neural network compare on discrimination and dropout-case detection?
 
-## Why this problem matters
+## Machine-learning workflow
 
-A useful early-warning model should do more than maximize overall accuracy. It should help identify high-risk students early enough for support teams to act, while making the limitations of the prediction clear.
+- Data inspection and quality checks
+- Missing-data treatment
+- Feature engineering, including age derived from date of birth
+- Ordinal, binary, and one-hot encoding
+- Train / validation / test partitioning
+- XGBoost baseline and hyperparameter tuning
+- MLP baseline and hyperparameter tuning
+- StandardScaler fitted on training data for the neural network
+- Accuracy, precision, recall, F1 and ROC-AUC comparison
+- Feature-importance and loss-curve analysis
 
-Potential applications include:
+## Key results
 
-- Early-warning systems
-- Targeted student support
-- Retention planning
-- Academic-risk monitoring
-- Data-informed intervention design
+| Stage | Model | Accuracy | Precision | Recall | F1 | ROC-AUC |
+|---|---|---:|---:|---:|---:|---:|
+| 1 | Tuned XGBoost | 0.8935 | 0.6830 | 0.5393 | 0.6027 | 0.8838 |
+| 1 | Tuned Neural Network | 0.8899 | 0.6707 | 0.5206 | 0.5862 | 0.7378 |
+| 2 | Tuned XGBoost | 0.8994 | 0.7079 | 0.5235 | 0.6019 | 0.9002 |
+| 2 | Tuned Neural Network | 0.8974 | 0.6563 | 0.6163 | 0.6357 | 0.8763 |
+| 3 | **Tuned XGBoost** | **0.9761** | **0.9338** | **0.8989** | **0.9160** | **0.9926** |
+| 3 | Tuned Neural Network | 0.9710 | 0.9188 | 0.8781 | 0.8980 | 0.9854 |
 
-## Workflow
+### Main finding
 
-1. Data inspection and quality checks
-2. Exploratory data analysis
-3. Categorical encoding and numerical preprocessing
-4. Feature engineering
-5. Class-imbalance handling
-6. Train/validation/test splitting
-7. Baseline model development
-8. XGBoost modelling
-9. Neural-network comparison
-10. Hyperparameter tuning
-11. Evaluation using classification metrics
-12. Interpretation of findings and limitations
+**Tuned XGBoost at Stage 3 was the strongest overall model**, reaching 97.61% accuracy and 0.9926 ROC-AUC.
 
-## Models
+The analysis also reveals an important operational trade-off: later-stage data produces much stronger predictions, but earlier predictions give institutions more time to intervene. A real early-warning system should therefore optimize not only predictive performance, but also intervention timing and the cost of missed at-risk students.
 
-### XGBoost
+## Responsible deployment considerations
 
-XGBoost was used as the main tree-based ensemble model because it performs strongly on structured/tabular data and can capture nonlinear relationships and interactions between predictors.
+Before operational use, this project should be extended with:
 
-### Multi-Layer Perceptron
+- probability calibration and decision-threshold analysis,
+- subgroup/fairness evaluation,
+- temporal or cohort-based validation,
+- leakage checks,
+- explainability for student-support teams,
+- governance around sensitive student information.
 
-A neural-network model was developed as a comparison to the tree-based approach.
-
-## Reported results
-
-The current project record reports:
-
-- **ROC-AUC: 0.99**
-- **Accuracy: 97.6%**
-
-These figures should be reproduced directly from the final held-out evaluation before being presented as production performance.
-
-> Important: strong evaluation scores do not automatically imply that a model is ready for deployment. Leakage, class balance, temporal validity, fairness and calibration should be checked before operational use.
-
-## Evaluation principles
-
-For a student-risk model, useful evaluation should include more than accuracy:
-
-- ROC-AUC
-- Precision
-- Recall
-- F1-score
-- Confusion matrix
-- Class-specific error analysis
-- Calibration where probabilities are used for intervention prioritisation
-
-Recall is particularly important when the cost of failing to identify an at-risk student is high.
-
-## Responsible-use considerations
-
-A student-dropout model should support human decision-making, not replace it.
-
-Before operational deployment, the system should be reviewed for:
-
-- Bias across demographic or socioeconomic groups
-- Data leakage
-- Over-reliance on protected or sensitive attributes
-- Probability calibration
-- False-positive and false-negative consequences
-- Explainability for support teams
-- Appropriate governance and access controls
-
-## Tech stack
-
-- Python
-- Pandas
-- NumPy
-- Scikit-learn
-- XGBoost
-- TensorFlow / Keras
-- Matplotlib
-- Seaborn
-- Jupyter Notebook
+The model should support human intervention decisions rather than automatically determine student outcomes.
 
 ## Repository structure
 
@@ -109,38 +60,19 @@ Before operational deployment, the system should be reviewed for:
 student-dropout-prediction-ml/
 ├── README.md
 ├── requirements.txt
-├── data/
-│   └── README.md
 ├── notebooks/
-│   └── README.md
-├── reports/
-│   └── figures/
-└── docs/
-    └── MIGRATION_GUIDE.md
+│   └── student_dropout_prediction.ipynb
+├── docs/
+│   └── PROJECT_NOTES.md
+└── reports/
 ```
 
-## Recommended visuals for the README
+## Tech stack
 
-When the notebook is cleaned, export and add:
-
-1. Target/class distribution
-2. Confusion matrix for the final model
-3. ROC curve
-4. Feature-importance or SHAP summary plot
-5. Training/validation learning curve for the MLP if available
-
-## Future development
-
-- Reproduce all final metrics from a clean held-out test set
-- Add probability calibration
-- Add SHAP-based explainability
-- Add fairness checks across relevant student groups
-- Package preprocessing and model inference into a reproducible pipeline
-- Add automated tests for preprocessing and inference
-- Build a lightweight demonstration interface only after the model pipeline is validated
+Python · Pandas · NumPy · Scikit-learn · XGBoost · TensorFlow/Keras · Matplotlib · Seaborn
 
 ## Skills demonstrated
 
-`Classification` · `XGBoost` · `Neural Networks` · `Feature Engineering` ·
-`Class Imbalance` · `Hyperparameter Tuning` · `Model Evaluation` ·
-`Responsible AI` · `Python`
+`Supervised Learning` · `Classification` · `XGBoost` · `Neural Networks` ·
+`Feature Engineering` · `Hyperparameter Tuning` · `Model Evaluation` ·
+`Data Leakage Prevention` · `Predictive Analytics` · `Responsible AI`
